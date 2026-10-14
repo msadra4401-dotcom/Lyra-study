@@ -437,8 +437,29 @@ html.stealth .lname{display:none}
 @media(max-width:640px){#lyraImg{width:104px;height:150px;border-width:2px}#lyraBub{font-size:11px;padding:5px 8px}}
 html.stealth #lyraDock{display:none!important}
 </style>
+
+<style id="lyra-login-style">
+#lyraGate{position:fixed;inset:0;z-index:2147483647;display:flex;align-items:center;justify-content:center;padding:24px;background:#f5f2eb;color:#182033;font-family:inherit}
+#lyraGate .lyra-card{width:min(100%,390px);padding:30px;border:1px solid #e4dfd4;border-radius:22px;background:#fff;box-shadow:0 20px 70px #17203320}
+#lyraGate h1{margin:0 0 8px;font-size:26px}#lyraGate p{margin:0 0 22px;color:#667085;font-size:14px}
+#lyraGate label{display:block;margin:14px 0 6px;font-size:14px}
+#lyraGate input{box-sizing:border-box;width:100%;padding:12px;border:1px solid #d0d5dd;border-radius:10px;font:inherit;background:#fff;color:#182033}
+#lyraGate button{width:100%;margin-top:20px;padding:12px;border:0;border-radius:10px;background:#244ac4;color:#fff;font:inherit;font-weight:700;cursor:pointer}
+#lyraError{min-height:20px;margin-top:12px;color:#c43232;font-size:13px}
+</style>
 </head>
 <body>
+
+<div id="lyraGate" role="dialog" aria-modal="true" aria-labelledby="lyraTitle">
+ <form class="lyra-card" id="lyraLogin">
+  <h1 id="lyraTitle">Lyra Study</h1>
+  <p>برای ورود به مقر فرماندهی، اطلاعات ورود را وارد کن.</p>
+  <label for="lyraUser">نام کاربری</label><input id="lyraUser" name="username" autocomplete="username" required>
+  <label for="lyraPass">رمز عبور</label><input id="lyraPass" name="password" type="password" autocomplete="current-password" required>
+  <button type="submit">ورود</button><div id="lyraError" role="alert"></div>
+ </form>
+</div>
+
 <header class="topbar"><div class="wrap tbin">
   <div class="brand"><i></i>برنامهٔ مطالعه</div>
   <nav id="nav" class="nav"></nav>
@@ -4347,5 +4368,19 @@ function applyUpdateFile(u){
   later(autoTasks);
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4941f2f2b7ecf30',t:'MTc5MTc4NzMxNw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4941f2f2b7ecf30',t:'MTc5MTc4NzMxNw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+<script id="lyra-login-script">
+(function(){
+ const gate=document.getElementById('lyraGate');
+ const form=document.getElementById('lyraLogin');
+ form.addEventListener('submit',function(e){
+  e.preventDefault();
+  const u=document.getElementById('lyraUser').value.trim();
+  const p=document.getElementById('lyraPass').value;
+  if(u==='lyra'&&p==='lyra1'){gate.style.display='none';}
+  else document.getElementById('lyraError').textContent='نام کاربری یا رمز عبور درست نیست.';
+ });
+})();
+</script>
+</body>
 </html>
