@@ -124,7 +124,7 @@ h1{font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.25;margin:0 0 8px;letter-spa
         const S=readState();if(!S||!Array.isArray(S.tasks))throw new Error('nostate');
         let added=0,updated=0;
         payload.tasks.forEach((item,i)=>{
-          if(!item||!String(item.title||'').trim()||!/^\\d{4}-\\d{2}-\\d{2}$/.test(String(item.date||'')))throw new Error('task');
+          if(!item||!String(item.title||'').trim()||!/^\d{4}-\d{2}-\d{2}$/.test(String(item.date||'')))throw new Error('task');
           const id=String(item.id||('advisor-'+item.date+'-'+(i+1)));
           let old=S.tasks.find(t=>String(t.id)===id);
           if(old){old.title=String(item.title).trim();old.date=String(item.date);old.order=Number(item.order)||i+1;updated++}
