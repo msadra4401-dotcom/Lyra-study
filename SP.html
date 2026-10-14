@@ -225,6 +225,29 @@ table.tb{width:100%;border-collapse:collapse;font-size:var(--fs-s)}
 .spoiler.rev img{filter:none;transform:none}
 .spoiler.rev .hint{display:none}
 .qdel{position:absolute;top:-7px;inset-inline-end:-7px;padding:0 7px;line-height:20px;border-radius:99px}
+.cc-hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(210px,.8fr);gap:18px;align-items:center;padding:20px;background:linear-gradient(130deg,var(--pr-s),var(--sf) 68%);border-color:color-mix(in srgb,var(--pr) 28%,var(--ln))!important}
+.cc-kicker{font-size:var(--fs-xs);color:var(--mu);font-weight:700;letter-spacing:.02em}
+.cc-title{font-size:clamp(23px,4vw,34px);line-height:1.35;margin:5px 0 7px;color:var(--ink)}
+.cc-sub{font-size:var(--fs-s);color:var(--ink2);line-height:1.9}
+.cc-progress{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:13px}
+.cc-progress .big{font-size:clamp(26px,4vw,34px);font-weight:800;line-height:1.3;color:var(--pr-t)}
+.cc-progress .meter{margin:8px 0}
+.cc-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}
+.cc-stat{min-width:0;padding:13px;border:1px solid var(--ln);border-radius:var(--r);background:var(--sf);box-shadow:var(--sh1)}
+.cc-stat .label{font-size:var(--fs-xs);color:var(--mu)}
+.cc-stat .value{font-size:clamp(19px,2.6vw,25px);font-weight:800;margin-top:4px;overflow-wrap:anywhere}
+.cc-stat .hint{font-size:11px;color:var(--mu);margin-top:3px;line-height:1.7}
+.cc-columns{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:12px}
+.cc-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.cc-next{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.cc-next .main{flex:1;min-width:180px}
+.cc-quote{background:linear-gradient(135deg,var(--pr-s),var(--sf));border:1px solid color-mix(in srgb,var(--pr) 28%,var(--ln));border-radius:var(--r);padding:16px;margin:12px 0}
+.cc-quote .quote{font-size:var(--fs-m);line-height:1.95;color:var(--ink2);margin-top:5px}
+.cc-bars{display:flex;align-items:flex-end;gap:6px;height:96px;margin:10px 0 4px;padding:8px 4px 0;background:var(--sf2);border-radius:var(--r2)}
+.cc-bars .bar{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px}
+.cc-bars i{display:block;width:100%;max-width:28px;min-height:2px;background:var(--pr);border-radius:4px 4px 1px 1px}
+.cc-bars b{font-size:10px;font-weight:500;color:var(--mu)}
+@media(max-width:650px){.cc-hero{grid-template-columns:1fr;gap:12px;padding:15px}.cc-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.cc-columns{grid-template-columns:1fr}.cc-stat{padding:11px}}
 .motiv{background:linear-gradient(135deg,var(--pr-s),transparent 70%),var(--sf);border:1px solid color-mix(in srgb,var(--pr) 30%,var(--ln));border-radius:var(--r);padding:14px 16px;margin:2px 0 12px;cursor:pointer;box-shadow:var(--sh1);transition:transform .15s}
 .motiv:active{transform:scale(.99)}
 .motiv b{display:block;font-size:var(--fs-xl);color:var(--pr-t);margin-bottom:5px}
@@ -1032,9 +1055,9 @@ function queueOn(D){return S.queue.filter(q=>!q.done&&q.date===D)}
 /* ============================================================
    رابط — بخش ۱: پوسته، ناوبری، امروز، هفته، درس‌ها
    ============================================================ */
-const NAV=[['today','امروز'],['week','هفته'],['exams','آزمون‌ها'],['lessons','درس‌ها'],['review','مرور'],['stats','آمار']];
+const NAV=[['command','مقر فرماندهی'],['today','امروز'],['week','هفته'],['exams','آزمون‌ها'],['lessons','درس‌ها'],['review','مرور'],['stats','آمار']];
 const MORE=[['setup','شروع دوره'],['tl','تایم‌لاین'],['ideas','ایده‌ها'],['qs','سوال‌ها'],['settings','تنظیمات']];
-let U={tab:'today',day:null,wk:0,swk:0,etab:'main',weakF:'all',rtab:'boxes',tlDay:null,setupTab:'checklist',per:0,cal:null,eq:''};
+let U={tab:'command',day:null,wk:0,swk:0,etab:'main',weakF:'all',rtab:'boxes',tlDay:null,setupTab:'checklist',per:0,cal:null,eq:''};
 const colOf=bid=>{const b=book(bid);return b?(b.color||'#0F766E'):'#94A3B8'};
 const curEl=sel=>document.querySelector(sel);
 const titleOf=l=>esc((l.group?l.group+' ':'')+l.title);
@@ -1098,10 +1121,10 @@ function render(){
    +'<details class="mn"><summary style="list-style:none;display:flex;align-items:center;gap:5px;padding:7px 12px;border-radius:8px;cursor:pointer;font-size:var(--fs-m);color:'+(inMore?'var(--pr-t)':'var(--mu)')+';background:'+(inMore?'var(--pr-s)':'none')+'">بیشتر ⌄</summary><div class="mnbody">'
    +MORE.map(t=>'<button data-a="nav" data-t="'+t[0]+'"'+(U.tab===t[0]?' style="font-weight:700;color:var(--pr-t)"':'')+'>'+t[1]+'</button>').join('')
    +'</div></details>';
-  const bnav=[NAV[0],NAV[1],NAV[2],NAV[3],['more','بیشتر']];
+  const bnav=[['command','مقر فرماندهی'],['today','امروز'],['week','هفته'],['exams','آزمون‌ها'],['more','بیشتر']];
   $('#bnav').innerHTML=bnav.map(t=>{
     if(t[0]==='more')return '<button data-a="sheet"><em>☰</em>بیشتر</button>';
-    const ic={today:'◉',week:'▤',exams:'✎',lessons:'▦',review:'↻',stats:'▥'}[t[0]]||'•';
+    const ic={command:'⌘',today:'◉',week:'▤',exams:'✎',lessons:'▦',review:'↻',stats:'▥'}[t[0]]||'•';
     return '<button data-a="nav" data-t="'+t[0]+'" class="'+(U.tab===t[0]?'on':'')+'"><em>'+ic+'</em>'+t[1]+(c[t[0]]?'<span class="bdg">'+bdg(c[t[0]])+'</span>':'')+'</button>';
   }).join('');
   $('#hdate').textContent=jfull(todayStr());
@@ -1114,7 +1137,7 @@ function render(){
    +'<hr style="border:0;border-top:1px solid var(--ln2);margin:8px 0">'
    +'<button class="it" data-a="theme"><em>◐</em>پوسته</button>'
    +'<button class="it" data-a="nbtn"><em>🕘</em>تاریخچهٔ تغییرات</button>';
-  const v=({today:vToday,week:vWeek,lessons:vLessons,exams:vExams,review:vReview,stats:vStats,setup:vSetup,tl:vTL,ideas:vIdeas,qs:vQs,settings:vSettings})[U.tab]||vToday;
+  const v=({command:vCommandCenter,today:vToday,week:vWeek,lessons:vLessons,exams:vExams,review:vReview,stats:vStats,setup:vSetup,tl:vTL,ideas:vIdeas,qs:vQs,settings:vSettings})[U.tab]||vToday;
   $('#main').innerHTML=v();
   renderTimer();
   window.scrollTo(0,y);
@@ -1254,6 +1277,70 @@ function testsTotals(a,b){
   S.tasks.filter(x=>x.done&&x.doneAt>=a&&x.doneAt<=b&&x.result&&x.result.n).forEach(x=>{n+=x.result.n;ok+=x.result.ok;ko+=x.result.ko;bl+=x.result.bl});
   return{n:n,ok:ok,ko:ko,bl:bl};
 }
+/* ===================== مقر فرماندهی =====================
+   صفحهٔ مستقل؛ عمداً تابع vToday دست‌نخورده می‌ماند.
+   همهٔ اعداد از داده‌های واقعی S و توابع فعلی برنامه می‌آیند.
+   ======================================================== */
+function vCommandCenter(){
+  const D=todayStr(),ws=weekStart(D),di=dow(D);
+  const todaySecs=liveDay(D),todayGoal=dayTarget(D),weekSecs=rangeSecs(ws,D),weekGoal=weekTarget(ws);
+  const todayPct=todayGoal>0?clamp(todaySecs/todayGoal*100,0,100):0;
+  const weekPct=weekGoal>0?clamp(weekSecs/weekGoal*100,0,100):0;
+  const weekDays=[0,1,2,3,4,5,6].map(i=>({d:addDays(ws,i),s:liveDay(addDays(ws,i)),i}));
+  const maxDay=Math.max(3600,...weekDays.map(x=>x.s));
+  const ts=testsTotals(D,D),tw=testsTotals(ws,D);
+  const testPct=n=>n.n?Math.round((3*n.ok-n.ko)/(3*n.n)*1000)/10:null;
+  const streak=streakCalc(D);
+  const openTasks=S.tasks.filter(t=>!t.done&&t.date&&t.date<=D).length;
+  const dueReviews=S.reviews.filter(r=>!r.done&&r.due<=D&&lesson(r.lessonId)).length;
+  const completedLessons=S.lessons.filter(l=>l.done).length;
+  const totalLessons=S.lessons.length;
+  const planned=planOf(ws,di)||[];
+  let next=null;
+  for(const bid of planned){
+    const b=book(bid),l=curLesson(bid),st=l&&curStep(l);
+    if(b&&l&&st){next={b,l,st};break}
+  }
+  const m=motivOf(D);
+  const future=[];
+  S.exams.forEach(e=>{if(e.date>=D&&e.booklets.some(b=>!b.done))future.push({date:e.date,name:e.name,id:e.id,kind:e.kind,left:e.booklets.filter(b=>!b.done).length})});
+  S.tasbiti.forEach(e=>{if(e.date>=D&&e.booklets.some(b=>!b.done))future.push({date:e.date,name:e.name,id:null,kind:'tasbiti',left:e.booklets.filter(b=>!b.done).length})});
+  future.sort((a,b)=>a.date.localeCompare(b.date));
+  let h='<div class="pghead"><div><div class="cc-kicker">LYRA · STUDY COMMAND</div><h2 class="page">مقر فرماندهی</h2><div class="mu">'+jfull(D)+' · یک نگاه به مسیر، بعد شروع</div></div><div class="acts end"><button class="btn sm" data-a="nav" data-t="today">رفتن به امروز ←</button><button class="btn sm" data-a="nav" data-t="stats">گزارش کامل</button></div></div>';
+  h+='<section class="card cc-hero"><div><div class="cc-kicker">مأموریت امروز</div><div class="cc-title">قرار نیست همه‌چیز را همین الان حل کنی.</div><div class="cc-sub">فقط قدم بعدی را روشن کن و شروعش کن. بقیهٔ اطلاعات اینجا هستند تا وقتی لازم داشتی به آن‌ها سر بزنی؛ تب «امروز» هم همان‌طور که بود باقی مانده.</div><div class="cc-actions"><button class="btn pri" data-a="nav" data-t="today">رفتن به برنامهٔ امروز</button><button class="btn" data-a="startFree">شروع تایمر آزاد</button><button class="btn" data-a="suggestNow" title="این پیشنهاد فقط از کارهای چیده‌شدهٔ امروز می‌آید">🎲 پیشنهاد کار</button></div></div>';
+  h+='<div class="cc-progress"><div class="label">پیشرفت هدف امروز</div><div class="big">'+hmc(todaySecs)+'</div><div class="mu">از هدف '+hmc(todayGoal)+'</div>'+meter(todayPct,todayPct>=100?'ok':'')+'<div class="kv"><span>باقی‌ماندهٔ هدف امروز</span><b>'+(todaySecs>=todayGoal?'تکمیل شد ✓':hmc(Math.max(0,todayGoal-todaySecs)))+'</b></div><div class="kv"><span>پیشرفت هدف هفتگی</span><b>'+fa(Math.round(weekPct))+'٪</b></div>'+meter(weekPct,weekPct>=100?'ok':'')+'</div></section>';
+  h+='<div class="cc-grid">';
+  h+='<div class="cc-stat"><div class="label">مطالعهٔ امروز</div><div class="value">'+hmc(todaySecs)+'</div><div class="hint">زمان مطالعهٔ ثبت‌شده</div></div>';
+  h+='<div class="cc-stat"><div class="label">این هفته تا امروز</div><div class="value">'+hmc(weekSecs)+'</div><div class="hint">از '+hmc(weekGoal)+' هدف هفتگی</div></div>';
+  h+='<div class="cc-stat"><div class="label">تست‌های امروز</div><div class="value">'+fa(ts.n)+'</div><div class="hint">'+(testPct(ts)==null?'هنوز نتیجه‌ای ثبت نشده':'درصد با نمرهٔ منفی: '+fa(testPct(ts),1)+'٪')+'</div></div>';
+  h+='<div class="cc-stat"><div class="label">زنجیرهٔ روزها</div><div class="value">'+fa(streak)+' روز</div><div class="hint">بر اساس رسیدن به هدف روزانه</div></div></div>';
+  h+='<div class="cc-columns"><div>';
+  h+=card('قدم بعدی','<button class="btn sm" data-a="nav" data-t="today">همهٔ کارهای امروز</button>',
+    next?'<div class="cc-next"><div class="main"><div class="cc-kicker">از چیدمان امروز</div><b>'+esc(next.b.name)+' · '+esc(lbl(next.l))+'</b><div class="mu" style="margin-top:5px">مرحلهٔ بعدی: '+esc(next.st.name)+'</div></div>'+startB({t:'step',l:next.l.id,s:next.st.id},lbl(next.l)+' — '+next.st.name,next.b.id)+'</div>'
+    :'<div class="empty">برای امروز قدم بعدیِ چیده‌شده‌ای پیدا نکردم. از تب «امروز» برنامه را ببین یا یک کار مشخص انتخاب کن.</div>');
+  h+=card('کارهایی که منتظرند','',
+    '<div class="rows">'+row({title:'کارهای باز تا امروز',meta:'تسک‌های انجام‌نشده',acts:'<b>'+fa(openTasks)+'</b>'})+
+    row({title:'مرورهای موعددار',meta:'مرورهایی که موعدشان رسیده',acts:'<b>'+fa(dueReviews)+'</b>'})+
+    row({title:'فصل‌های تکمیل‌شده',meta:'از '+fa(totalLessons)+' فصل',acts:'<b>'+fa(completedLessons)+' / '+fa(totalLessons)+'</b>'})+
+    '</div><div class="cc-actions"><button class="btn sm" data-a="nav" data-t="review">رفتن به مرور</button><button class="btn sm" data-a="nav" data-t="lessons">دیدن درس‌ها</button></div>');
+  h+='</div><div>';
+  h+=card('این هفته، در یک نگاه','<button class="btn sm" data-a="nav" data-t="stats">آمار کامل</button>',
+    '<div class="cc-bars">'+weekDays.map(x=>'<div class="bar" title="'+jd(x.d)+' — '+hmc(x.s)+'"><i style="height:'+Math.max(2,Math.round(x.s/maxDay*100))+'%"></i><b>'+DAYN[x.i]+'</b></div>').join('')+'</div>'+
+    '<div class="mu2">هر ستون از زمان واقعی مطالعه ساخته شده؛ امروز با آمار روزهای قبل مقایسه‌پذیر است.</div>'+
+    '<div class="kv"><span>تست این هفته تا امروز</span><b>'+fa(tw.n)+'</b></div>'+
+    '<div class="kv"><span>درصد تست هفتگی</span><b>'+(testPct(tw)==null?'—':fa(testPct(tw),1)+'٪')+'</b></div>'+
+    '<div class="kv"><span>فصل‌های تکمیل‌شده</span><b>'+fa(totalLessons?Math.round(completedLessons/totalLessons*100):0)+'٪</b></div>');
+  const ex=future[0];
+  h+=card('آزمون بعدی','<button class="btn sm" data-a="tabExams">همهٔ آزمون‌ها</button>',
+    ex?'<div class="cc-kicker">'+(ex.date===D?'امروز':fa(Math.max(0,diffDays(ex.date,D)))+' روز دیگر')+'</div><h3 style="margin:6px 0">'+esc(ex.name)+'</h3><div class="mu">'+jd(ex.date)+' · '+fa(ex.left)+' دفترچهٔ ناتمام</div>'
+      +(ex.id?'<div class="cc-actions"><button class="btn sm pri" data-a="startExam" data-e="'+ex.id+'">شروع آزمون</button></div>':'')
+    :'<div class="empty">آزمون آیندهٔ ناتمامی ثبت نشده.</div>');
+  h+='</div></div>';
+  h+='<section class="cc-quote"><div class="cc-kicker">وقتی خسته‌ای، اینجا را ببین</div><div class="quote"><b>'+esc(m.hi)+'</b><br>'+esc(m.q)+'</div><div class="mu" style="margin-top:9px">پیشرفت واقعی تو همین‌جا ثبت می‌شود؛ لازم نیست هر روز رکورد بزنی، لازم است مسیرت را ادامه بدهی.</div></section>';
+  h+='<div class="acts" style="justify-content:center;margin:12px 0 4px"><button class="btn sm" data-a="nav" data-t="week">برنامهٔ هفته</button><button class="btn sm" data-a="nav" data-t="exams">آزمون‌ها و نتایج</button><button class="btn sm" data-a="nav" data-t="stats">آمار و روند پیشرفت</button><button class="btn sm" data-a="nav" data-t="settings">پشتیبان‌گیری و تنظیمات</button></div>';
+  return h;
+}
+
 /* ============================ امروز ============================ */
 function vToday(){
   const D=U.day||todayStr(),isT=D===todayStr(),ws=weekStart(D),wn=weekNo(ws),di=dow(D);
