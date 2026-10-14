@@ -10,6 +10,16 @@
 *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#28244b 0,transparent 42%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;line-height:1.65}
 button{font:inherit;cursor:pointer;border:0}.wrap{max-width:1120px;margin:auto;padding:22px 18px 40px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.08rem}.orb{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--purple),#6e62d8);display:grid;place-items:center;color:#151326;font-weight:900}.date{color:var(--muted);font-size:.9rem}
 h1{font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.25;margin:0 0 8px;letter-spacing:-.04em}.lead{color:var(--muted);margin:0;max-width:650px}.hero{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:clamp(22px,4vw,36px);border:1px solid #47416e;background:linear-gradient(125deg,#292543,#1b1b2b 68%);border-radius:26px;margin-bottom:14px}.heroCopy{max-width:700px}.eyebrow{color:var(--purple);font-size:.8rem;font-weight:800;letter-spacing:.06em;margin-bottom:10px}.btn{padding:10px 15px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);color:var(--text);font-weight:700}.btn.primary{background:var(--purple);color:#171426;border-color:transparent}.btn:hover{filter:brightness(1.08)}.hero .btn{margin-top:18px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{min-width:0;background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:20px}.card h2{font-size:1rem;margin:0 0 12px}.metric{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.big{font-size:clamp(1.7rem,4vw,2.2rem);font-weight:850;letter-spacing:-.04em}.muted{color:var(--muted);font-size:.88rem}.bar{height:8px;border-radius:99px;background:#37364f;overflow:hidden;margin:12px 0 7px}.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--purple2),var(--purple));border-radius:99px}.smallrow{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:.84rem}.chart{height:90px;display:flex;align-items:flex-end;gap:3px;margin-top:14px}.chart i{display:block;flex:1;min-width:2px;background:#6154b4;border-radius:4px 4px 1px 1px;opacity:.85}.chart i.today{background:var(--green);opacity:1}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stat{background:#171726;border:1px solid var(--line);border-radius:14px;padding:12px}.stat strong{display:block;font-size:1.3rem}.next{font-size:1.08rem;font-weight:750;overflow-wrap:anywhere}.callout{margin-top:14px;padding:18px 20px;border-radius:18px;background:#25213e;border:1px solid #49416d;display:flex;align-items:center;justify-content:space-between;gap:18px}.callout p{margin:3px 0 0;color:var(--muted);font-size:.92rem}.empty{color:var(--muted);font-size:.9rem;line-height:1.8}.foot{color:var(--muted);text-align:center;font-size:.78rem;margin-top:18px}
+.planActions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tasklist{display:grid;gap:8px;margin-top:12px}
+.taskrow{display:flex;align-items:flex-start;gap:10px;padding:12px;border:1px solid var(--line);border-radius:12px;background:#171726;cursor:pointer}
+.taskcheck{width:20px;height:20px;accent-color:var(--green);flex:0 0 auto;margin-top:3px}
+.taskbody{min-width:0;flex:1}
+.tasktitle{display:block;font-weight:700;overflow-wrap:anywhere}
+.taskrow.done .tasktitle{text-decoration:line-through;color:var(--muted)}
+.taskmeta{display:block;color:var(--muted);font-size:.78rem;margin-top:3px}
+.planStatus{color:var(--muted);font-size:.85rem;margin-top:8px}
+@media(max-width:700px){.taskrow{padding:10px}}
 .appbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 14px;background:#151421;border-bottom:1px solid var(--line);min-height:48px}.appbar strong{font-size:.92rem}.app-shell{display:none}.app-shell iframe{display:block;width:100%;height:calc(100dvh - 48px);min-height:480px;border:0;background:var(--bg)}
 @media(max-width:700px){.wrap{padding:16px 12px 28px}.hero{display:block;padding:22px}.grid{grid-template-columns:1fr}.card{padding:17px}.callout{align-items:flex-start;flex-direction:column}.stats{grid-template-columns:repeat(3,minmax(0,1fr))}.stat{padding:10px}.stat strong{font-size:1.1rem}.date{font-size:.78rem}.appbar{padding-inline:10px}}
 </style>
@@ -23,6 +33,7 @@ h1{font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.25;margin:0 0 8px;letter-spa
     <article class="card"><h2>امروز</h2><div class="metric"><span id="todayTime" class="big">—</span><span id="todayGoal" class="muted">از هدف روزانه</span></div><div class="bar"><span id="todayBar" style="width:0%"></span></div><div class="smallrow"><span id="todayPct">—</span><span id="taskSummary">کارهای امروز</span></div></article>
     <article class="card"><h2>این هفته</h2><div class="metric"><span id="weekTime" class="big">—</span><span id="weekGoal" class="muted">از هدف هفتگی</span></div><div class="bar"><span id="weekBar" style="width:0%"></span></div><div class="smallrow"><span id="weekPct">—</span><span id="weekLabel">هفتهٔ جاری</span></div></article>
     <article class="card"><h2>قدم بعدی</h2><div id="nextTask" class="next">بازکردن برنامهٔ امروز</div><p id="nextMeta" class="muted">جزئیات کارها در برنامهٔ اصلی است.</p><button class="btn" id="nextButton">رفتن به امروز</button></article>
+    <article class="card" style="grid-column:1/-1"><div style="display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap"><h2 style="margin:0">فهرست اجرای برنامه</h2><div class="planActions"><button class="btn primary" id="importPlan">واردکردن برنامهٔ مشاور</button><input type="file" id="planFile" accept=".json,application/json" hidden></div></div><p class="muted" style="margin:8px 0 0">اینجا فقط تسک‌ها را تیک می‌زنی. برنامه و تیک‌ها در داده‌های همین مرورگر ذخیره می‌شوند، نه داخل کد سایت.</p><div id="planStatus" class="planStatus">وقتی برنامهٔ مشاور را آماده کردیم، فایلش را از همین‌جا وارد می‌کنی.</div><div id="taskList" class="tasklist"><div class="empty">برای نمایش تسک‌ها، برنامهٔ اصلی را دست‌کم یک‌بار باز کن.</div></div></article>
     <article class="card"><h2>چیزهایی که واقعاً جلو رفته‌اند</h2><div class="stats"><div class="stat"><span class="muted">زنجیره</span><strong id="streak">—</strong><span class="muted">روز</span></div><div class="stat"><span class="muted">روزهای فعال</span><strong id="activeDays">—</strong><span class="muted">از ۳۰ روز</span></div><div class="stat"><span class="muted">مرور موعددار</span><strong id="reviewsDue">—</strong><span class="muted">مورد</span></div></div><p id="bestDay" class="muted" style="margin:14px 0 0">بهترین روز در ۳۰ روز اخیر: —</p></article>
     <article class="card" style="grid-column:1/-1"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap"><h2 style="margin:0">روند ۳۰ روز اخیر</h2><span id="thirtyTotal" class="muted">مجموع زمان ثبت‌شده</span></div><div id="chart" class="chart" aria-label="نمودار زمان ثبت‌شده در ۳۰ روز اخیر"></div><div class="smallrow" style="margin-top:8px"><span>۳۰ روز قبل</span><span>امروز</span></div></article>
   </section>
@@ -66,6 +77,8 @@ h1{font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.25;margin:0 0 8px;letter-spa
       $('nextMeta').textContent='این صفحه داده‌ها را پاک یا ویرایش نمی‌کند.';
       $('todayTime').textContent='—';$('todayGoal').textContent='هنوز داده‌ای نیست';
       $('weekTime').textContent='—';$('weekGoal').textContent='هنوز داده‌ای نیست';
+      $('taskList').innerHTML='<div class="empty">برای حفظ سازگاری، یک‌بار «برنامهٔ مطالعه» را باز کن؛ بعد می‌توانی برنامهٔ مشاور را وارد کنی.</div>';
+      $('planStatus').textContent='هنوز دادهٔ برنامه در این مرورگر ساخته نشده است.';
       $('chart').innerHTML='';return;
     }
     $('dataNotice').hidden=true;
@@ -79,7 +92,11 @@ h1{font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.25;margin:0 0 8px;letter-spa
     $('weekBar').style.width=wp+'%';$('weekPct').textContent=fa.format(wp)+'٪ از هدف هفتگی';
     $('weekLabel').textContent='هفتهٔ '+fa.format(weekNumber(ws));
     const tasks=(S.tasks||[]).filter(t=>t.date===D),done=tasks.filter(t=>t.done).length,open=tasks.filter(t=>!t.done).sort((a,b)=>(a.order||0)-(b.order||0));
+    const planTasks=(S.tasks||[]).filter(t=>t.date===D||(!t.done&&t.date&&t.date<D)).sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.order||0)-(b.order||0));
     $('taskSummary').textContent=fa.format(done)+' از '+fa.format(tasks.length)+' کار';
+    $('taskList').innerHTML=planTasks.length?planTasks.map(t=>'<label class="taskrow'+(t.done?' done':'')+'"><input class="taskcheck" type="checkbox" data-plan-task="1" data-id="'+esc(t.id)+'"'+(t.done?' checked':'')+'><span class="taskbody"><span class="tasktitle">'+esc(t.title)+'</span><span class="taskmeta">'+(t.date<D?'عقب‌افتاده · '+esc(jalali(t.date)):'امروز · '+esc(jalali(t.date)))+'</span></span></label>').join(''):'<div class="empty">برای امروز هنوز تسکی ثبت نشده؛ بعد از دریافت برنامهٔ مشاور، آن را از دکمهٔ بالا وارد می‌کنیم.</div>';
+    const overdue=planTasks.filter(t=>t.date<D&&!t.done).length;
+    $('planStatus').textContent=fa.format(done)+' از '+fa.format(tasks.length)+' کار امروز انجام شده'+(overdue?' · '+fa.format(overdue)+' کار عقب‌افتاده':'')+' · برای تیک‌زدن، نیازی به بازکردن تب امروز نیست.';
     $('nextTask').textContent=open.length?open[0].title:'کار آزاد ثبت‌نشده یا برنامهٔ درسی';
     $('nextMeta').textContent=open.length?'اولین کار آزادِ ناتمام امروز؛ جزئیات را در تب امروز ببین.':'برای انتخاب درس و مراحلش وارد برنامهٔ اصلی شو.';
     const reviews=(S.reviews||[]).filter(r=>!r.done&&r.due<=D).length;
@@ -93,9 +110,44 @@ h1{font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.25;margin:0 0 8px;letter-spa
     const max=Math.max(3600,...arr.map(x=>x.s));
     $('chart').innerHTML=arr.map(x=>'<i class="'+(x.d===D?'today':'')+'" title="'+esc(jalali(x.d)+' — '+fmtTime(x.s))+'" style="height:'+Math.max(2,Math.round(x.s/max*100))+'%"></i>').join('');
   }
-  function enter(){ $('dashboard').style.display='none';$('appShell').style.display='block';if(!$('appFrame').src)$('appFrame').src='SP.html';window.scrollTo(0,0)}
+  function enter(){ $('dashboard').style.display='none';$('appShell').style.display='block';$('appFrame').src='SP.html?open='+Date.now();window.scrollTo(0,0)}
   function home(){ $('appShell').style.display='none';$('dashboard').style.display='block';render();window.scrollTo(0,0)}
   $('enterApp').addEventListener('click',enter);$('enterApp2').addEventListener('click',enter);$('nextButton').addEventListener('click',enter);$('backHome').addEventListener('click',home);
+  $('importPlan').addEventListener('click',()=>$('planFile').click());
+  $('planFile').addEventListener('change',e=>{
+    const file=e.target.files&&e.target.files[0];if(!file)return;
+    const reader=new FileReader();
+    reader.onload=()=>{
+      try{
+        const payload=JSON.parse(reader.result);
+        if(!payload||payload.format!=='lyra-plan-v1'||!Array.isArray(payload.tasks))throw new Error('format');
+        const S=readState();if(!S||!Array.isArray(S.tasks))throw new Error('nostate');
+        let added=0,updated=0;
+        payload.tasks.forEach((item,i)=>{
+          if(!item||!String(item.title||'').trim()||!/^\\d{4}-\\d{2}-\\d{2}$/.test(String(item.date||'')))throw new Error('task');
+          const id=String(item.id||('advisor-'+item.date+'-'+(i+1)));
+          let old=S.tasks.find(t=>String(t.id)===id);
+          if(old){old.title=String(item.title).trim();old.date=String(item.date);old.order=Number(item.order)||i+1;updated++}
+          else{S.tasks.push({id,title:String(item.title).trim(),date:String(item.date),done:false,doneAt:null,only:true,order:Number(item.order)||i+1,source:'advisor'});added++}
+        });
+        localStorage.setItem('study-planner-v1',JSON.stringify(S));
+        $('planFile').value='';render();
+        $('planStatus').textContent='برنامه وارد شد: '+fa.format(added)+' تسک تازه'+(updated?' و '+fa.format(updated)+' تسک به‌روزشده':'')+'. حالا فقط تیک‌ها را بزن.';
+      }catch(err){
+        $('planStatus').textContent=err&&err.message==='nostate'?'اول یک‌بار برنامهٔ اصلی را باز کن تا داده‌هایش در این مرورگر ساخته شوند.':'فایل برنامه معتبر نیست یا ذخیره‌سازی ناموفق بود؛ هیچ برنامه‌ای را از روی این فایل جایگزین نکردم.';
+      }
+    };
+    reader.readAsText(file);
+  });
+  document.addEventListener('change',e=>{
+    const box=e.target.closest('[data-plan-task]');if(!box)return;
+    const S=readState();if(!S||!Array.isArray(S.tasks))return;
+    const task=S.tasks.find(t=>String(t.id)===box.dataset.id);if(!task)return;
+    const oldDone=!!task.done;task.done=box.checked;
+    if(task.done)task.doneAt=Date.now();else delete task.doneAt;
+    try{localStorage.setItem('study-planner-v1',JSON.stringify(S));render()}
+    catch(err){task.done=oldDone;render();$('planStatus').textContent='ذخیره نشد؛ از برنامهٔ اصلی وارد تنظیمات شو و پشتیبان بگیر.'}
+  });
   render();
   setInterval(()=>{if($('dashboard').style.display!=='none')render()},30000);
 })();
