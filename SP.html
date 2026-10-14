@@ -1284,10 +1284,11 @@ function testsTotals(a,b){
    ======================================================== */
 function vCommandCenter(){
   const D=todayStr(),ws=weekStart(D),di=dow(D);
-  const todaySecs=liveDay(D),todayGoal=dayTarget(D),weekSecs=rangeSecs(ws,D),weekGoal=weekTarget(ws);
+  const studyRange=(a,b)=>{let n=sum(S.sessions.filter(x=>x.date>=a&&x.date<=b&&!['phone','free','exam'].includes(x.type)),x=>x.secs);if(S.timer&&S.timer.date>=a&&S.timer.date<=b&&!['phone','free','exam'].includes(S.timer.type))n+=liveElapsed();return n};
+  const todaySecs=studyRange(D,D),todayGoal=dayTarget(D),weekSecs=studyRange(ws,D),weekGoal=weekTarget(ws);
   const todayPct=todayGoal>0?clamp(todaySecs/todayGoal*100,0,100):0;
   const weekPct=weekGoal>0?clamp(weekSecs/weekGoal*100,0,100):0;
-  const weekDays=[0,1,2,3,4,5,6].map(i=>({d:addDays(ws,i),s:liveDay(addDays(ws,i)),i}));
+  const weekDays=[0,1,2,3,4,5,6].map(i=>({d:addDays(ws,i),s:studyRange(addDays(ws,i),addDays(ws,i)),i}));
   const maxDay=Math.max(3600,...weekDays.map(x=>x.s));
   const ts=testsTotals(D,D),tw=testsTotals(ws,D);
   const testPct=n=>n.n?Math.round((3*n.ok-n.ko)/(3*n.n)*1000)/10:null;
@@ -3834,6 +3835,7 @@ function lyraReward(title){
 /* ---------- لیرای کنار صفحه: هر ساعت یک چهره ---------- */
 let _lyI=0;
 const LYTAB={
+ command:[MASC.panelGuide,'مقر فرماندهی؛ تصویر کلی مسیرت اینجاست. بعد قدم بعدی را انتخاب کن.'],
  week:[MASC.f1,'هفته‌ات را همین‌جا می‌چینیم؛ کِی و چند ساعت، با هم.'],
  ex_main:[MASC.f5,'دفترچه‌ها همین‌جا منتظرن؛ هر وقت آماده بودی یکی را باز کنیم.'],
  ex_done:[MASC.chibiWin,'زده‌شده‌ها؛ به هر خطی که اینجاست افتخار کن.'],
