@@ -474,7 +474,7 @@ const dlgm=(txt,img)=>'<div style="display:flex;gap:12px;align-items:center;marg
    اعلان‌ها، برنامهٔ هفته، جعبهٔ جبران
    کلید ذخیره‌سازی مثل نسخهٔ قبل است: study-planner-v1
    ============================================================ */
-const APP_V='3.8', DATA_V=5, KEY='study-planner-v1';
+const APP_V='3.9', DATA_V=5, KEY='study-planner-v1';
 
 /* ---------- ابزارها ---------- */
 const $=s=>document.querySelector(s);
@@ -708,7 +708,7 @@ if(!d.love||typeof d.love!=='object')d.love={ch:0,brs:[],mile:{}};else if(!d.lov
   if(d.settings.sysNotif===undefined)d.settings.sysNotif=true;
   if(!Array.isArray(d.hist))d.hist=[];
   if(!Array.isArray(d.updates))d.updates=[];
-  const NOTES={'2.2':['تقویم ماهانه با گرمای مطالعه','اولویت پایین آزمون‌ها (فقط ۴ روز آخر)','صفحهٔ دوره: قبل / جاری / بعد','اعلان سیستمی مرورگر برای یادآورها'],
+  const NOTES={'3.9':['مقر فرماندهی: شمارش درست کارهای باز و تکمیل درس‌ها','حفظ دسترسی به تب «درس‌ها» در منوی موبایل'],'2.2':['تقویم ماهانه با گرمای مطالعه','اولویت پایین آزمون‌ها (فقط ۴ روز آخر)','صفحهٔ دوره: قبل / جاری / بعد','اعلان سیستمی مرورگر برای یادآورها'],
     '2.2.1':['دکمهٔ «ثبت زمان» از سرصفحهٔ «امروز» برداشته شد (در منوی ⋯ و ＋ هست)','«توقف» = ثبت خودکار زمان، بدون پرسیدن','تیک «انجام شد» فقط دستی زده می‌شود'],
     '2.3':['«زمان هر درس»: میانگین زمان هر درس هر کتاب و میانگین هر مرحله','برآورد زمان درس‌های باقی‌مانده و میانگین درس‌های تمام‌شده','میانگین هر کتاب در سرصفحهٔ کارت کتاب‌های «درس‌ها»'],
     '2.4':['درگ‌ودراپ برای مرتب‌کردن آزمون‌ها و مراحل هر درس (با دستگیرهٔ ⠿)','تب «آمادگی» در آزمون‌ها','در «امروز»، آزمون‌های هفتهٔ دوم از هفتهٔ اول هم قابل‌ثبت‌اند','عنوان فصل‌ها با نام واقعی کتاب‌ها'],
@@ -1143,7 +1143,8 @@ function render(){
   $('#hdate').textContent=jfull(todayStr());
   $('#qmenu').innerHTML=QUICK.map(q=>'<button data-a="'+q[0]+'">'+q[1]+'</button>').join('');
   $('#sheetBody').innerHTML=MORE.map(t=>'<button class="it" data-a="nav" data-t="'+t[0]+'"><em>•</em>'+t[1]+'</button>').join('')
-   +'<button class="it" data-a="nav" data-t="review"><em>↻</em>مرور</button>'
+   +'<button class="it" data-a="nav" data-t="lessons"><em>▦</em>درس‌ها</button>'
+    +'<button class="it" data-a="nav" data-t="review"><em>↻</em>مرور</button>'
    +'<button class="it" data-a="nav" data-t="stats"><em>▥</em>آمار</button>'
    +'<hr style="border:0;border-top:1px solid var(--ln2);margin:8px 0"><div class="mu" style="padding:0 8px 4px">ثبت سریع</div>'
    +QUICK.map(q=>'<button class="it" data-a="'+q[0]+'"><em>＋</em>'+q[1]+'</button>').join('')
@@ -1305,9 +1306,9 @@ function vCommandCenter(){
   const ts=testsTotals(D,D),tw=testsTotals(ws,D);
   const testPct=n=>n.n?Math.round((3*n.ok-n.ko)/(3*n.n)*1000)/10:null;
   const streak=streakCalc(D);
-  const openTasks=S.tasks.filter(t=>!t.done&&t.date&&t.date<=D).length;
+  const openTasks=S.tasks.filter(t=>!t.done&&(!t.date||t.date<=D)&&!(t.only&&t.date<D)).length;
   const dueReviews=S.reviews.filter(r=>!r.done&&r.due<=D&&lesson(r.lessonId)).length;
-  const completedLessons=S.lessons.filter(l=>l.done).length;
+  const completedLessons=S.lessons.filter(l=>lessonStatus(l)==='done').length;
   const totalLessons=S.lessons.length;
   const planned=planOf(ws,di)||[];
   let next=null;
