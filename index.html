@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#17152a">
+<title>مقر فرماندهی | Lyra</title>
+<style>
+:root{color-scheme:dark;--bg:#11111b;--panel:#1b1b2b;--panel2:#222238;--line:#34344b;--text:#f4f2ff;--muted:#aaa9c2;--purple:#a99aff;--purple2:#7765df;--green:#64d7a4;--orange:#ffca7a;--radius:20px}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 80% 0%,#28244b 0,transparent 42%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;line-height:1.65}
+button{font:inherit;cursor:pointer;border:0}.wrap{max-width:1120px;margin:auto;padding:22px 18px 40px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.08rem}.orb{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,var(--purple),#6e62d8);display:grid;place-items:center;color:#151326;font-weight:900}.date{color:var(--muted);font-size:.9rem}
+h1{font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.25;margin:0 0 8px;letter-spacing:-.04em}.lead{color:var(--muted);margin:0;max-width:650px}.hero{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:clamp(22px,4vw,36px);border:1px solid #47416e;background:linear-gradient(125deg,#292543,#1b1b2b 68%);border-radius:26px;margin-bottom:14px}.heroCopy{max-width:700px}.eyebrow{color:var(--purple);font-size:.8rem;font-weight:800;letter-spacing:.06em;margin-bottom:10px}.btn{padding:10px 15px;border-radius:12px;background:var(--panel2);border:1px solid var(--line);color:var(--text);font-weight:700}.btn.primary{background:var(--purple);color:#171426;border-color:transparent}.btn:hover{filter:brightness(1.08)}.hero .btn{margin-top:18px}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.card{min-width:0;background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:var(--radius);padding:20px}.card h2{font-size:1rem;margin:0 0 12px}.metric{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.big{font-size:clamp(1.7rem,4vw,2.2rem);font-weight:850;letter-spacing:-.04em}.muted{color:var(--muted);font-size:.88rem}.bar{height:8px;border-radius:99px;background:#37364f;overflow:hidden;margin:12px 0 7px}.bar span{display:block;height:100%;background:linear-gradient(90deg,var(--purple2),var(--purple));border-radius:99px}.smallrow{display:flex;justify-content:space-between;gap:12px;color:var(--muted);font-size:.84rem}.chart{height:90px;display:flex;align-items:flex-end;gap:3px;margin-top:14px}.chart i{display:block;flex:1;min-width:2px;background:#6154b4;border-radius:4px 4px 1px 1px;opacity:.85}.chart i.today{background:var(--green);opacity:1}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.stat{background:#171726;border:1px solid var(--line);border-radius:14px;padding:12px}.stat strong{display:block;font-size:1.3rem}.next{font-size:1.08rem;font-weight:750;overflow-wrap:anywhere}.callout{margin-top:14px;padding:18px 20px;border-radius:18px;background:#25213e;border:1px solid #49416d;display:flex;align-items:center;justify-content:space-between;gap:18px}.callout p{margin:3px 0 0;color:var(--muted);font-size:.92rem}.empty{color:var(--muted);font-size:.9rem;line-height:1.8}.foot{color:var(--muted);text-align:center;font-size:.78rem;margin-top:18px}
+.appbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 14px;background:#151421;border-bottom:1px solid var(--line);min-height:48px}.appbar strong{font-size:.92rem}.app-shell{display:none}.app-shell iframe{display:block;width:100%;height:calc(100dvh - 48px);min-height:480px;border:0;background:var(--bg)}
+@media(max-width:700px){.wrap{padding:16px 12px 28px}.hero{display:block;padding:22px}.grid{grid-template-columns:1fr}.card{padding:17px}.callout{align-items:flex-start;flex-direction:column}.stats{grid-template-columns:repeat(3,minmax(0,1fr))}.stat{padding:10px}.stat strong{font-size:1.1rem}.date{font-size:.78rem}.appbar{padding-inline:10px}}
+</style>
+</head>
+<body>
+<section id="dashboard" class="wrap">
+  <header class="top"><div class="brand"><span class="orb">L</span><span>LYRA <span style="color:var(--muted);font-weight:500">/ مقر فرماندهی</span></span></div><span id="todayDate" class="date"></span></header>
+  <section class="hero"><div class="heroCopy"><div class="eyebrow">مرکز هدایت مطالعه</div><h1>اول تصویر کلی.<br>بعد، فقط قدم بعدی.</h1><p class="lead">این صفحه برای دیدن مسیر و یادآوری پیشرفتت است؛ برای ثبت کار و شروع مطالعه وارد برنامهٔ اصلی شو. تب «امروز» و بقیهٔ قابلیت‌ها دست‌نخورده‌اند.</p><button class="btn primary" id="enterApp">رفتن به برنامهٔ مطالعه ←</button></div></section>
+  <div id="dataNotice" class="empty" hidden></div>
+  <section class="grid">
+    <article class="card"><h2>امروز</h2><div class="metric"><span id="todayTime" class="big">—</span><span id="todayGoal" class="muted">از هدف روزانه</span></div><div class="bar"><span id="todayBar" style="width:0%"></span></div><div class="smallrow"><span id="todayPct">—</span><span id="taskSummary">کارهای امروز</span></div></article>
+    <article class="card"><h2>این هفته</h2><div class="metric"><span id="weekTime" class="big">—</span><span id="weekGoal" class="muted">از هدف هفتگی</span></div><div class="bar"><span id="weekBar" style="width:0%"></span></div><div class="smallrow"><span id="weekPct">—</span><span id="weekLabel">هفتهٔ جاری</span></div></article>
+    <article class="card"><h2>قدم بعدی</h2><div id="nextTask" class="next">بازکردن برنامهٔ امروز</div><p id="nextMeta" class="muted">جزئیات کارها در برنامهٔ اصلی است.</p><button class="btn" id="nextButton">رفتن به امروز</button></article>
+    <article class="card"><h2>چیزهایی که واقعاً جلو رفته‌اند</h2><div class="stats"><div class="stat"><span class="muted">زنجیره</span><strong id="streak">—</strong><span class="muted">روز</span></div><div class="stat"><span class="muted">روزهای فعال</span><strong id="activeDays">—</strong><span class="muted">از ۳۰ روز</span></div><div class="stat"><span class="muted">مرور موعددار</span><strong id="reviewsDue">—</strong><span class="muted">مورد</span></div></div><p id="bestDay" class="muted" style="margin:14px 0 0">بهترین روز در ۳۰ روز اخیر: —</p></article>
+    <article class="card" style="grid-column:1/-1"><div style="display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap"><h2 style="margin:0">روند ۳۰ روز اخیر</h2><span id="thirtyTotal" class="muted">مجموع زمان ثبت‌شده</span></div><div id="chart" class="chart" aria-label="نمودار زمان ثبت‌شده در ۳۰ روز اخیر"></div><div class="smallrow" style="margin-top:8px"><span>۳۰ روز قبل</span><span>امروز</span></div></article>
+  </section>
+  <section class="callout"><div><strong>هدف بزرگ: رتبهٔ دورقمی.</strong><p>لازم نیست همین حالا کل مسیر را حل کنی؛ فقط قدم بعدی را انجام بده. این داشبورد آمار واقعی را نشان می‌دهد، نه درصد ساختگی برای رتبه.</p></div><button class="btn primary" id="enterApp2">برگشت به مسیر مطالعه ←</button></section>
+  <footer class="foot">Lyra · صفحهٔ فرماندهی جداگانه · داده‌ها در مرورگر خودت خوانده می‌شوند.</footer>
+</section>
+<section id="appShell" class="app-shell">
+  <header class="appbar"><strong>برنامهٔ مطالعه · <span style="color:var(--muted);font-weight:500">مقر فرماندهی جدا از تب امروز است</span></strong><button class="btn" id="backHome">بازگشت به مقر فرماندهی</button></header>
+  <iframe id="appFrame" title="برنامهٔ اصلی مطالعه" loading="lazy"></iframe>
+</section>
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const fa=new Intl.NumberFormat('fa-IR');
+  const pad=n=>String(n).padStart(2,'0');
+  const iso=d=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
+  const fromISO=s=>{const a=String(s||'').split('-').map(Number);return new Date(a[0]||2000,(a[1]||1)-1,a[2]||1,12)};
+  const plus=(s,n)=>{const d=fromISO(s);d.setDate(d.getDate()+n);return iso(d)};
+  const daysBetween=(a,b)=>Math.round((Date.UTC(fromISO(b).getFullYear(),fromISO(b).getMonth(),fromISO(b).getDate())-Date.UTC(fromISO(a).getFullYear(),fromISO(a).getMonth(),fromISO(a).getDate()))/86400000);
+  const wsOf=s=>{const d=fromISO(s);d.setDate(d.getDate()-((d.getDay()+1)%7));return iso(d)};
+  const jalali=s=>fromISO(s).toLocaleDateString('fa-IR-u-ca-persian',{day:'numeric',month:'short',year:'numeric'});
+  const fmtTime=s=>{s=Math.max(0,Math.floor(s||0));const h=Math.floor(s/3600),m=Math.floor(s%3600/60);return h?fa.format(h)+' ساعت'+(m?' و '+fa.format(m)+' دقیقه':''):fa.format(m)+' دقیقه'};
+  const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const clampPct=(n)=>Math.max(0,Math.min(100,Math.round(n||0)));
+  function readState(){try{return JSON.parse(localStorage.getItem('study-planner-v1')||'null')}catch(e){return null}}
+  function sessionSecs(S,d){return (S.sessions||[]).filter(x=>x.date===d&&x.type!=='phone'&&x.type!=='exam').reduce((n,x)=>n+(Number(x.secs)||0),0)}
+  function elapsed(t){if(!t)return 0;let ms=Date.now()-t.startTs-((t.paused&&t.paused.total)||0);if(t.paused)ms-=Date.now()-t.paused.at;return Math.max(0,Math.floor(ms/1000))}
+  function daySecs(S,d,live){let n=sessionSecs(S,d);if(live&&S.timer&&S.timer.date===d&&!S.timer.paused&&S.timer.type!=='phone'&&S.timer.type!=='exam')n+=elapsed(S.timer);return n}
+  function targetDay(S,d,weekGoal){const st=S.settings||{};if(st.dayTargets&&st.dayTargets[d]!=null)return Number(st.dayTargets[d])*3600;if(st.dayTarget)return Number(st.dayTarget)*3600;return weekGoal/7}
+  function weekNumber(ws){return Math.max(1,Math.floor(daysBetween('2026-10-10',ws)/7)+1)}
+  function targetWeek(S,ws){const st=S.settings||{};if(st.weekTargets&&st.weekTargets[ws]!=null)return Number(st.weekTargets[ws])*3600;return (Number(st.weeklyHours)||84)*3600+Math.max(0,weekNumber(ws)-1)*3600}
+  function hit(S,d){const goal=targetDay(S,d,targetWeek(S,wsOf(d)));const n=sessionSecs(S,d);return goal<=0?n>0:n>=Math.min(goal,14*3600)}
+  function streak(S,D){let d=D,n=0;if(!hit(S,d))d=plus(d,-1);while(hit(S,d)&&n<730){n++;d=plus(d,-1)}return n}
+  function render(){
+    const D=iso(new Date()),ws=wsOf(D),we=plus(ws,6),S=readState();
+    $('todayDate').textContent=jalali(D);
+    if(!S||!Array.isArray(S.sessions)){
+      $('dataNotice').hidden=false;
+      $('dataNotice').textContent='هنوز داده‌ای از برنامهٔ اصلی در این مرورگر پیدا نکردم. اگر این اولین ورود است، «رفتن به برنامهٔ مطالعه» را بزن و بعد دوباره به مقر فرماندهی برگرد.';
+      $('nextTask').textContent='برنامهٔ اصلی را باز کن تا داده‌ها ساخته شوند.';
+      $('nextMeta').textContent='این صفحه داده‌ها را پاک یا ویرایش نمی‌کند.';
+      $('todayTime').textContent='—';$('todayGoal').textContent='هنوز داده‌ای نیست';
+      $('weekTime').textContent='—';$('weekGoal').textContent='هنوز داده‌ای نیست';
+      $('chart').innerHTML='';return;
+    }
+    $('dataNotice').hidden=true;
+    const weekGoal=targetWeek(S,ws),dayGoal=targetDay(S,D,weekGoal);
+    const today=daySecs(S,D,true);
+    let week=0;for(let i=0;i<7;i++)week+=daySecs(S,plus(ws,i),true);
+    const dp=clampPct(dayGoal?today/dayGoal*100:0),wp=clampPct(weekGoal?week/weekGoal*100:0);
+    $('todayTime').textContent=fmtTime(today);$('todayGoal').textContent='از هدف '+fmtTime(dayGoal);
+    $('todayBar').style.width=dp+'%';$('todayPct').textContent=fa.format(dp)+'٪ از هدف روزانه';
+    $('weekTime').textContent=fmtTime(week);$('weekGoal').textContent='از هدف '+fmtTime(weekGoal);
+    $('weekBar').style.width=wp+'%';$('weekPct').textContent=fa.format(wp)+'٪ از هدف هفتگی';
+    $('weekLabel').textContent='هفتهٔ '+fa.format(weekNumber(ws));
+    const tasks=(S.tasks||[]).filter(t=>t.date===D),done=tasks.filter(t=>t.done).length,open=tasks.filter(t=>!t.done).sort((a,b)=>(a.order||0)-(b.order||0));
+    $('taskSummary').textContent=fa.format(done)+' از '+fa.format(tasks.length)+' کار';
+    $('nextTask').textContent=open.length?open[0].title:'کار آزاد ثبت‌نشده یا برنامهٔ درسی';
+    $('nextMeta').textContent=open.length?'اولین کار آزادِ ناتمام امروز؛ جزئیات را در تب امروز ببین.':'برای انتخاب درس و مراحلش وارد برنامهٔ اصلی شو.';
+    const reviews=(S.reviews||[]).filter(r=>!r.done&&r.due<=D).length;
+    $('reviewsDue').textContent=fa.format(reviews);
+    $('streak').textContent=fa.format(streak(S,D));
+    const arr=[];for(let i=29;i>=0;i--){const d=plus(D,-i);arr.push({d,s:daySecs(S,d,true)})}
+    $('activeDays').textContent=fa.format(arr.filter(x=>x.s>0).length);
+    const total=arr.reduce((n,x)=>n+x.s,0),best=arr.reduce((a,x)=>x.s>a.s?x:a,arr[0]);
+    $('thirtyTotal').textContent='مجموع: '+fmtTime(total);
+    $('bestDay').textContent='بهترین روز در ۳۰ روز اخیر: '+(best&&best.s>0?jalali(best.d)+' · '+fmtTime(best.s):'هنوز داده‌ای ثبت نشده');
+    const max=Math.max(3600,...arr.map(x=>x.s));
+    $('chart').innerHTML=arr.map(x=>'<i class="'+(x.d===D?'today':'')+'" title="'+esc(jalali(x.d)+' — '+fmtTime(x.s))+'" style="height:'+Math.max(2,Math.round(x.s/max*100))+'%"></i>').join('');
+  }
+  function enter(){ $('dashboard').style.display='none';$('appShell').style.display='block';if(!$('appFrame').src)$('appFrame').src='SP.html';window.scrollTo(0,0)}
+  function home(){ $('appShell').style.display='none';$('dashboard').style.display='block';render();window.scrollTo(0,0)}
+  $('enterApp').addEventListener('click',enter);$('enterApp2').addEventListener('click',enter);$('nextButton').addEventListener('click',enter);$('backHome').addEventListener('click',home);
+  render();
+  setInterval(()=>{if($('dashboard').style.display!=='none')render()},30000);
+})();
+</script>
+</body>
+</html>
