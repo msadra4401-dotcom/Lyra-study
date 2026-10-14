@@ -59,13 +59,14 @@ h1{font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.25;margin:0 0 8px;letter-spa
   const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const clampPct=(n)=>Math.max(0,Math.min(100,Math.round(n||0)));
   function readState(){try{return JSON.parse(localStorage.getItem('study-planner-v1')||'null')}catch(e){return null}}
-  function sessionSecs(S,d){return (S.sessions||[]).filter(x=>x.date===d&&x.type!=='phone'&&x.type!=='exam').reduce((n,x)=>n+(Number(x.secs)||0),0)}
+  function sessionSecs(S,d){return (S.sessions||[]).filter(x=>x.date===d&&!['phone','free','exam'].includes(x.type)).reduce((n,x)=>n+(Number(x.secs)||0),0)}
+  function streakSecs(S,d){return (S.sessions||[]).filter(x=>x.date===d&&x.type!=='phone'&&x.type!=='exam').reduce((n,x)=>n+(Number(x.secs)||0),0)}
   function elapsed(t){if(!t)return 0;let ms=Date.now()-t.startTs-((t.paused&&t.paused.total)||0);if(t.paused)ms-=Date.now()-t.paused.at;return Math.max(0,Math.floor(ms/1000))}
-  function daySecs(S,d,live){let n=sessionSecs(S,d);if(live&&S.timer&&S.timer.date===d&&!S.timer.paused&&S.timer.type!=='phone'&&S.timer.type!=='exam')n+=elapsed(S.timer);return n}
+  function daySecs(S,d,live){let n=sessionSecs(S,d);if(live&&S.timer&&S.timer.date===d&&!S.timer.paused&&!['phone','free','exam'].includes(S.timer.type))n+=elapsed(S.timer);return n}
   function targetDay(S,d,weekGoal){const st=S.settings||{};if(st.dayTargets&&st.dayTargets[d]!=null)return Number(st.dayTargets[d])*3600;if(st.dayTarget)return Number(st.dayTarget)*3600;return weekGoal/7}
-  function weekNumber(ws){return Math.max(1,Math.floor(daysBetween('2026-10-10',ws)/7)+1)}
-  function targetWeek(S,ws){const st=S.settings||{};if(st.weekTargets&&st.weekTargets[ws]!=null)return Number(st.weekTargets[ws])*3600;return (Number(st.weeklyHours)||84)*3600+Math.max(0,weekNumber(ws)-1)*3600}
-  function hit(S,d){const goal=targetDay(S,d,targetWeek(S,wsOf(d)));const n=sessionSecs(S,d);return goal<=0?n>0:n>=Math.min(goal,14*3600)}
+  function weekNumber(S,ws){const start=(S.settings||{}).week1Start||'2026-10-10';return Math.max(1,Math.floor(daysBetween(wsOf(start),ws)/7)+1)}
+  function targetWeek(S,ws){const st=S.settings||{};if(st.weekTargets&&st.weekTargets[ws]!=null)return Number(st.weekTargets[ws])*3600;return (Number(st.weeklyHours)||84)*3600+Math.max(0,weekNumber(S,ws)-1)*3600}
+  function hit(S,d){const goal=targetDay(S,d,targetWeek(S,wsOf(d)));const n=streakSecs(S,d);return goal<=0?n>0:n>=Math.min(goal,14*3600)}
   function streak(S,D){let d=D,n=0;if(!hit(S,d))d=plus(d,-1);while(hit(S,d)&&n<730){n++;d=plus(d,-1)}return n}
   function render(){
     const D=iso(new Date()),ws=wsOf(D),we=plus(ws,6),S=readState();
@@ -84,15 +85,16 @@ h1{font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.25;margin:0 0 8px;letter-spa
     $('dataNotice').hidden=true;
     const weekGoal=targetWeek(S,ws),dayGoal=targetDay(S,D,weekGoal);
     const today=daySecs(S,D,true);
-    let week=0;for(let i=0;i<7;i++)week+=daySecs(S,plus(ws,i),true);
+    let week=0;for(let d=ws;d<=D;d=plus(d,1))week+=daySecs(S,d,true);
     const dp=clampPct(dayGoal?today/dayGoal*100:0),wp=clampPct(weekGoal?week/weekGoal*100:0);
     $('todayTime').textContent=fmtTime(today);$('todayGoal').textContent='از هدف '+fmtTime(dayGoal);
     $('todayBar').style.width=dp+'%';$('todayPct').textContent=fa.format(dp)+'٪ از هدف روزانه';
     $('weekTime').textContent=fmtTime(week);$('weekGoal').textContent='از هدف '+fmtTime(weekGoal);
     $('weekBar').style.width=wp+'%';$('weekPct').textContent=fa.format(wp)+'٪ از هدف هفتگی';
-    $('weekLabel').textContent='هفتهٔ '+fa.format(weekNumber(ws));
-    const tasks=(S.tasks||[]).filter(t=>t.date===D),done=tasks.filter(t=>t.done).length,open=tasks.filter(t=>!t.done).sort((a,b)=>(a.order||0)-(b.order||0));
-    const planTasks=(S.tasks||[]).filter(t=>t.date===D||(!t.done&&t.date&&t.date<D)).sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.order||0)-(b.order||0));
+    $('weekLabel').textContent='هفتهٔ '+fa.format(weekNumber(S,ws));
+    const doneToday=t=>t.doneAt===D||(typeof t.doneAt==='number'&&iso(new Date(t.doneAt))===D);
+    const tasks=(S.tasks||[]).filter(t=>t.done?doneToday(t):(t.date?(t.only?t.date===D:t.date<=D):true)),done=tasks.filter(t=>t.done).length,open=tasks.filter(t=>!t.done).sort((a,b)=>(a.order||0)-(b.order||0));
+    const planTasks=(S.tasks||[]).filter(t=>t.date===D||(!t.done&&t.date&&t.date<D&&!t.only)).sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.order||0)-(b.order||0));
     $('taskSummary').textContent=fa.format(done)+' از '+fa.format(tasks.length)+' کار';
     $('taskList').innerHTML=planTasks.length?planTasks.map(t=>'<label class="taskrow'+(t.done?' done':'')+'"><input class="taskcheck" type="checkbox" data-plan-task="1" data-id="'+esc(t.id)+'"'+(t.done?' checked':'')+'><span class="taskbody"><span class="tasktitle">'+esc(t.title)+'</span><span class="taskmeta">'+(t.date<D?'عقب‌افتاده · '+esc(jalali(t.date)):'امروز · '+esc(jalali(t.date)))+'</span></span></label>').join(''):'<div class="empty">برای امروز هنوز تسکی ثبت نشده؛ بعد از دریافت برنامهٔ مشاور، آن را از دکمهٔ بالا وارد می‌کنیم.</div>';
     const overdue=planTasks.filter(t=>t.date<D&&!t.done).length;
@@ -144,7 +146,7 @@ h1{font-size:clamp(1.8rem,4vw,2.8rem);line-height:1.25;margin:0 0 8px;letter-spa
     const S=readState();if(!S||!Array.isArray(S.tasks))return;
     const task=S.tasks.find(t=>String(t.id)===box.dataset.id);if(!task)return;
     const oldDone=!!task.done;task.done=box.checked;
-    if(task.done)task.doneAt=Date.now();else delete task.doneAt;
+    if(task.done)task.doneAt=iso(new Date());else task.doneAt=null;
     try{localStorage.setItem('study-planner-v1',JSON.stringify(S));render()}
     catch(err){task.done=oldDone;render();$('planStatus').textContent='ذخیره نشد؛ از برنامهٔ اصلی وارد تنظیمات شو و پشتیبان بگیر.'}
   });
