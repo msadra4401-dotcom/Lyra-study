@@ -1131,7 +1131,8 @@ function render(){
   $('#hdate').textContent=jfull(todayStr());
   $('#qmenu').innerHTML=QUICK.map(q=>'<button data-a="'+q[0]+'">'+q[1]+'</button>').join('');
   $('#sheetBody').innerHTML=MORE.map(t=>'<button class="it" data-a="nav" data-t="'+t[0]+'"><em>•</em>'+t[1]+'</button>').join('')
-   +'<button class="it" data-a="nav" data-t="review"><em>↻</em>مرور</button>'
+   +'<button class="it" data-a="nav" data-t="lessons"><em>▦</em>درس‌ها</button>'
+    +'<button class="it" data-a="nav" data-t="review"><em>↻</em>مرور</button>'
    +'<button class="it" data-a="nav" data-t="stats"><em>▥</em>آمار</button>'
    +'<hr style="border:0;border-top:1px solid var(--ln2);margin:8px 0"><div class="mu" style="padding:0 8px 4px">ثبت سریع</div>'
    +QUICK.map(q=>'<button class="it" data-a="'+q[0]+'"><em>＋</em>'+q[1]+'</button>').join('')
@@ -1284,17 +1285,20 @@ function testsTotals(a,b){
    ======================================================== */
 function vCommandCenter(){
   const D=todayStr(),ws=weekStart(D),di=dow(D);
-  const todaySecs=liveDay(D),todayGoal=dayTarget(D),weekSecs=rangeSecs(ws,D),weekGoal=weekTarget(ws);
+  const cmdDay=d=>daySecs(d)+(S.timer&&!S.timer.paused&&S.timer.date===d&&S.timer.type!=='phone'&&S.timer.type!=='exam'?liveElapsed():0);
+  const todaySecs=cmdDay(D),todayGoal=dayTarget(D),weekGoal=weekTarget(ws);
+  const weekSecs=sum(S.sessions.filter(x=>x.date>=ws&&x.date<=D&&x.type!=='phone'&&x.type!=='exam'),x=>x.secs)
+    +(S.timer&&!S.timer.paused&&S.timer.date>=ws&&S.timer.date<=D&&S.timer.type!=='phone'&&S.timer.type!=='exam'?liveElapsed():0);
   const todayPct=todayGoal>0?clamp(todaySecs/todayGoal*100,0,100):0;
   const weekPct=weekGoal>0?clamp(weekSecs/weekGoal*100,0,100):0;
-  const weekDays=[0,1,2,3,4,5,6].map(i=>({d:addDays(ws,i),s:liveDay(addDays(ws,i)),i}));
+  const weekDays=[0,1,2,3,4,5,6].map(i=>({d:addDays(ws,i),s:cmdDay(addDays(ws,i)),i}));
   const maxDay=Math.max(3600,...weekDays.map(x=>x.s));
   const ts=testsTotals(D,D),tw=testsTotals(ws,D);
   const testPct=n=>n.n?Math.round((3*n.ok-n.ko)/(3*n.n)*1000)/10:null;
   const streak=streakCalc(D);
-  const openTasks=S.tasks.filter(t=>!t.done&&t.date&&t.date<=D).length;
+  const openTasks=S.tasks.filter(t=>!t.done&&(!t.date||t.date<=D)&&!(t.only&&t.date<D)).length;
   const dueReviews=S.reviews.filter(r=>!r.done&&r.due<=D&&lesson(r.lessonId)).length;
-  const completedLessons=S.lessons.filter(l=>l.done).length;
+  const completedLessons=S.lessons.filter(l=>lessonStatus(l)==='done').length;
   const totalLessons=S.lessons.length;
   const planned=planOf(ws,di)||[];
   let next=null;
@@ -3834,6 +3838,7 @@ function lyraReward(title){
 /* ---------- لیرای کنار صفحه: هر ساعت یک چهره ---------- */
 let _lyI=0;
 const LYTAB={
+ command:[MASC.prep,'مقر فرماندهی؛ وضعیت کلی را ببین و بعد قدم بعدی را شروع کن.'],
  week:[MASC.f1,'هفته‌ات را همین‌جا می‌چینیم؛ کِی و چند ساعت، با هم.'],
  ex_main:[MASC.f5,'دفترچه‌ها همین‌جا منتظرن؛ هر وقت آماده بودی یکی را باز کنیم.'],
  ex_done:[MASC.chibiWin,'زده‌شده‌ها؛ به هر خطی که اینجاست افتخار کن.'],
