@@ -577,6 +577,37 @@ dialog::backdrop{background:rgba(7,20,25,.52);backdrop-filter:blur(5px)}
 }
 /* ================= end refresh ================= */
 
+
+/* ===== LYRA UI/UX polish — 2026-10 ===== */
+:root{--ui-radius:18px;--ui-radius-sm:12px;--ui-ease:cubic-bezier(.2,.75,.25,1)}
+html{scroll-behavior:smooth}
+body{font-family:Vazirmatn,system-ui,sans-serif;letter-spacing:-.12px;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+::selection{background:var(--pr-s);color:var(--pr-t)}
+:focus-visible{outline:3px solid color-mix(in srgb,var(--pr) 65%,transparent);outline-offset:3px}
+button,input,select,textarea{font:inherit}button{touch-action:manipulation}
+.topbar{position:sticky;top:0;z-index:40;background:color-mix(in srgb,var(--sf) 88%,transparent);border-bottom:1px solid color-mix(in srgb,var(--ln) 78%,transparent);box-shadow:0 4px 24px rgba(30,20,60,.035);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px)}
+.tbin{min-height:66px;gap:18px}.brand{font-weight:850;letter-spacing:-.5px;font-size:17px;white-space:nowrap}.brand i{box-shadow:0 4px 12px color-mix(in srgb,var(--pr) 24%,transparent)}
+.nav{gap:5px}.nav button,.nav a{border-radius:11px;padding:9px 13px;font-weight:650;transition:background .18s var(--ui-ease),color .18s var(--ui-ease),transform .18s var(--ui-ease)}.nav button:hover,.nav a:hover{transform:translateY(-1px)}
+.tbact{gap:8px}.ibtn{border:1px solid var(--ln);background:var(--sf);border-radius:12px;min-width:40px;min-height:40px;transition:all .18s var(--ui-ease);box-shadow:0 1px 2px rgba(30,20,60,.025)}.ibtn:hover{border-color:var(--pr);background:var(--pr-s);transform:translateY(-1px)}
+.wrap{max-width:1180px}#main.wrap{padding-top:24px;padding-bottom:44px}
+.hero{border:1px solid var(--ln);border-radius:24px;padding:clamp(20px,3vw,32px);background:linear-gradient(135deg,var(--sf),color-mix(in srgb,var(--pr-s) 62%,var(--sf)));box-shadow:var(--sh2);overflow:hidden;position:relative}.hero:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;inset-inline-end:-90px;top:-110px;pointer-events:none;background:radial-gradient(circle,color-mix(in srgb,var(--pr) 12%,transparent),transparent 68%)}.hero>*{position:relative;z-index:1}
+h1,h2,h3{letter-spacing:-.45px;line-height:1.55}h1{font-size:clamp(23px,3vw,32px)}h2{font-size:clamp(18px,2vw,22px)}
+.card{border:1px solid var(--ln);border-radius:var(--ui-radius);box-shadow:0 3px 14px rgba(30,20,60,.035);transition:border-color .18s var(--ui-ease),box-shadow .18s var(--ui-ease),transform .18s var(--ui-ease)}.card:hover{border-color:color-mix(in srgb,var(--pr) 25%,var(--ln));box-shadow:0 8px 24px rgba(30,20,60,.055)}
+.kpi{border-radius:16px;min-height:112px}.kpi .v{font-variant-numeric:tabular-nums;letter-spacing:-1px}
+button,.btn{transition:background .18s var(--ui-ease),border-color .18s var(--ui-ease),color .18s var(--ui-ease),box-shadow .18s var(--ui-ease),transform .18s var(--ui-ease)}button:active,.btn:active{transform:scale(.985)}
+input,select,textarea{border-radius:11px;min-height:42px;transition:border-color .18s var(--ui-ease),box-shadow .18s var(--ui-ease),background .18s var(--ui-ease)}input:focus,select:focus,textarea:focus{outline:none;border-color:var(--pr);box-shadow:0 0 0 3px color-mix(in srgb,var(--pr) 14%,transparent)}
+table{border-collapse:separate;border-spacing:0}th{font-weight:750}td,th{padding:10px 12px}tr>*{border-bottom:1px solid var(--ln2)}tr:last-child>*{border-bottom:0}
+dialog{border:1px solid var(--ln);border-radius:22px;box-shadow:0 24px 80px rgba(20,12,45,.2);padding:22px;max-height:min(88dvh,900px);overflow:auto}dialog::backdrop{background:rgba(20,15,35,.42);backdrop-filter:blur(4px)}
+#sheet{border-radius:24px 24px 0 0;box-shadow:0 -16px 55px rgba(25,15,50,.15)}#drawer{box-shadow:0 0 60px rgba(25,15,50,.18)}#toast{box-shadow:0 12px 36px rgba(25,15,50,.16);border:1px solid var(--ln)}#nbox{border:1px solid var(--ln);border-radius:18px;box-shadow:0 12px 36px rgba(25,15,50,.12)}
+#lyraGate{background:radial-gradient(ellipse at 85% 12%,color-mix(in srgb,var(--pr) 15%,transparent),transparent 42%),radial-gradient(ellipse at 10% 85%,rgba(99,102,241,.10),transparent 40%),var(--bg)}
+#lyraGate .lyra-card{border:1px solid var(--ln);border-radius:26px;box-shadow:0 24px 80px rgba(40,20,80,.12);padding:clamp(24px,4vw,38px)}#lyraTitle{font-size:30px;letter-spacing:-1px}#lyraGate input{width:100%;box-sizing:border-box}#lyraGate button[type=submit]{min-height:46px;border-radius:12px;font-weight:750;box-shadow:0 6px 16px color-mix(in srgb,var(--pr) 22%,transparent)}
+.fab{box-shadow:0 8px 24px color-mix(in srgb,var(--pr) 35%,transparent)}.bnav{border-top:1px solid var(--ln);background:color-mix(in srgb,var(--sf) 91%,transparent);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);padding-bottom:env(safe-area-inset-bottom)}.bnav>*{min-height:54px}
+#lyraDock{max-width:min(270px,58vw);gap:6px;opacity:.92;transition:opacity .2s}#lyraDock:hover{opacity:1}#lyraImg{width:92px;height:132px;border-radius:14px;border-width:2px;box-shadow:0 5px 16px rgba(124,58,237,.18)}#lyraBub{font-size:11.5px;padding:7px 9px;box-shadow:0 4px 12px rgba(124,58,237,.12)}
+@media(min-width:861px){.bnav,.bnav.on{display:none}#main.wrap{padding-top:30px}}
+@media(max-width:860px){.topbar{position:sticky}.tbin{min-height:58px}.nav{gap:2px}#main.wrap{padding-top:16px}.hero{border-radius:20px}.card{border-radius:16px}}
+@media(max-width:620px){.wrap{padding-inline:14px}.tbin{gap:8px}.brand{font-size:15px}.tbact{gap:5px}.ibtn{min-width:37px;min-height:37px;border-radius:11px}.date{display:none}#main.wrap{padding-top:12px;padding-bottom:112px}.hero{padding:19px 16px;border-radius:18px}.kpi{min-height:94px}.card{padding:13px}dialog{padding:16px;border-radius:18px;width:calc(100% - 24px);max-width:none}#lyraDock{max-width:210px;inset-inline-start:8px;bottom:8px}#lyraImg{width:62px;height:88px}#lyraBub{font-size:10px;max-width:128px;line-height:1.5}.fab,.fab.on{bottom:calc(76px + env(safe-area-inset-bottom))}.bnav{padding-bottom:env(safe-area-inset-bottom)}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+
 </style>
 
 <style id="lyra-login-style">
