@@ -588,6 +588,67 @@ dialog::backdrop{background:rgba(7,20,25,.52);backdrop-filter:blur(5px)}
 #lyraGate button{width:100%;margin-top:20px;padding:12px;border:0;border-radius:10px;background:#244ac4;color:#fff;font:inherit;font-weight:700;cursor:pointer}
 #lyraError{min-height:20px;margin-top:12px;color:#c43232;font-size:13px}
 </style>
+
+<!-- Lyra UX refinement: safe visual layer; preserves existing app logic and stored data -->
+<style id="lyra-ux-refinement">
+:root {
+  --ux-ease: cubic-bezier(.2,.75,.25,1);
+  --ux-ring: 0 0 0 3px color-mix(in srgb, var(--pr) 22%, transparent);
+}
+html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+body { text-rendering:optimizeLegibility; -webkit-font-smoothing:antialiased; }
+button, input, select, textarea { font:inherit; }
+button { touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+button, a, input, select, textarea, [role="button"] { transition:background-color .18s var(--ux-ease), border-color .18s var(--ux-ease), box-shadow .18s var(--ux-ease), transform .18s var(--ux-ease); }
+:where(button,a,input,select,textarea,[role="button"]):focus-visible { outline:0; box-shadow:var(--ux-ring); }
+:where(input,select,textarea) { max-width:100%; }
+::selection { background:color-mix(in srgb,var(--pr) 24%,transparent); }
+header.topbar { backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); }
+#main.wrap { padding-bottom:calc(100px + env(safe-area-inset-bottom)); }
+.card { border-radius:var(--r,14px); box-shadow:var(--sh1,0 2px 8px rgba(0,0,0,.04)); }
+.card:hover { box-shadow:var(--sh2,0 6px 18px rgba(0,0,0,.07)); }
+button { min-height:36px; }
+button:active { transform:translateY(1px) scale(.99); }
+input:not([type=checkbox]):not([type=radio]), select, textarea {
+  border-radius:10px; min-height:40px; scroll-margin-top:90px;
+}
+textarea { line-height:1.8; }
+label { line-height:1.7; }
+#toast, .toast { max-width:min(92vw,460px); }
+#sheet, #drawer { overscroll-behavior:contain; }
+#sheet .grab { touch-action:pan-y; }
+.bnav { padding-bottom:env(safe-area-inset-bottom); backdrop-filter:blur(18px); -webkit-backdrop-filter:blur(18px); }
+.bnav button { min-width:0; min-height:54px; }
+.fab { bottom:calc(82px + env(safe-area-inset-bottom)); }
+#lyraGate { padding:clamp(16px,4vw,32px); }
+#lyraGate input { min-height:46px; }
+#lyraGate button { min-height:44px; }
+#lyraBub { max-width:min(280px,75vw); }
+@media (min-width:861px) {
+  #main.wrap { max-width:1440px; margin-inline:auto; padding-inline:clamp(20px,3vw,42px); }
+}
+@media (max-width:860px) {
+  #main.wrap { padding-inline:14px; padding-top:12px; }
+  .card { margin-block:10px; }
+  .bnav { min-height:calc(62px + env(safe-area-inset-bottom)); }
+  .fab { bottom:calc(76px + env(safe-area-inset-bottom)); }
+}
+@media (max-width:480px) {
+  #main.wrap { padding-inline:10px; }
+  .card { border-radius:12px; }
+  input:not([type=checkbox]):not([type=radio]), select, textarea { font-size:16px; }
+  button { max-width:100%; }
+  #sheet, #drawer { max-height:calc(100dvh - env(safe-area-inset-top)); }
+}
+@media (prefers-reduced-motion:reduce) {
+  html { scroll-behavior:auto; }
+  *, *::before, *::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; }
+}
+@media print {
+  #lyraGate, #lyraDock, .bnav, .fab, #sheet, #drawer, #toast, #nbox { display:none!important; }
+}
+</style>
+
 </head>
 <body>
 
@@ -4509,7 +4570,6 @@ function applyUpdateFile(u){
   later(autoTasks);
 })();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a4941f2f2b7ecf30',t:'MTc5MTc4NzMxNw=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
 <script id="lyra-login-script">
 (function(){
  const gate=document.getElementById('lyraGate');
