@@ -17,6 +17,16 @@ button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid
 .barlist{display:flex;flex-direction:column;gap:10px}.barrow{display:grid;grid-template-columns:75px minmax(0,1fr) 66px;gap:8px;align-items:center;font-size:12px}.bartrack{height:9px;background:#0a1321;border-radius:99px;overflow:hidden}.barfill{height:100%;background:var(--green);border-radius:99px}.correlation{display:flex;align-items:center;gap:14px;flex-wrap:wrap}.rvalue{font-size:28px;font-weight:800;direction:ltr}.pill{border-radius:999px;background:#0b1423;border:1px solid var(--line);padding:4px 9px;font-size:12px;color:var(--muted)}
 .empty{padding:22px;text-align:center;color:var(--muted);border:1px dashed var(--line);border-radius:12px}.footer{color:var(--muted);font-size:11px;text-align:center;margin-top:18px}
 @media(max-width:800px){.span8,.span7,.span6,.span5,.span4{grid-column:span 12}.stats{grid-template-columns:repeat(2,1fr)}.slot{grid-template-columns:82px minmax(0,1fr)}.slot>button{grid-column:2;justify-self:start}.two{grid-template-columns:1fr}}
+
+.livebox{border:1px solid var(--line);border-radius:14px;background:#0e1727;padding:15px}
+.livegrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.livekicker{font-size:12px;color:var(--muted);margin-bottom:4px}
+.livename{font-size:clamp(19px,3vw,27px);font-weight:800}
+.livetime{font-size:14px;direction:ltr;text-align:right;font-variant-numeric:tabular-nums;color:var(--green);font-weight:700}
+.livehint{font-size:12px;color:var(--muted);margin-top:5px}
+.livebadge{display:inline-block;border-radius:999px;padding:3px 9px;background:#173f39;color:#9cf0cf;font-size:12px;margin-bottom:8px}
+.livebadge.next{background:#3c2c18;color:#ffcf91}
+@media(max-width:600px){.livegrid{grid-template-columns:1fr}}
 </style>
 </head>
 <body><main class="wrap">
@@ -39,6 +49,7 @@ button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid
 <div class="field" style="margin-top:10px"><label for="sleepNote">یادداشت اختیاری</label><input id="sleepNote" placeholder="مثلاً خواب منقطع یا بیداری دشوار"></div>
 <div class="row" style="margin-top:12px"><button class="primary" id="saveSleep">ذخیرهٔ خواب</button><span class="muted" id="sleepFeedback"></span></div>
 </div>
+<div class="card span12"><div class="cardhead"><h2>اکنون و پارت‌های پیش‌رو</h2><span class="pill" id="systemClock">--:--:--</span></div><div class="livegrid"><div class="livebox" aria-live="polite"><div class="livekicker">وضعیت فعلی بر اساس ساعت سیستم</div><div id="liveCurrent"><div class="livename">در حال بررسی برنامه…</div></div></div><div class="livebox" aria-live="polite"><div class="livekicker">نوبت بعدی</div><div id="liveNext"><div class="livename">در حال بررسی برنامه…</div></div></div></div><div class="tiny" style="margin-top:10px">این بخش فقط وضعیت زمانی را تشخیص می‌دهد؛ پارت‌ها را خودکار تمام‌شده علامت نمی‌زند و اطلاعات ثبت‌شده را تغییر نمی‌دهد.</div></div>
 <div class="card span7"><div class="cardhead"><h2>برنامهٔ روز</h2><span class="pill" id="dayTotal">—</span></div><div class="daybar" id="dayPicker"></div><div class="divider"></div><div class="schedule" id="schedule"></div></div>
 <div class="card span5"><div class="cardhead"><h2>ثبت قبل و بعد از پارت</h2><span class="pill" id="selectedPartLabel">پارت انتخاب نشده</span></div>
 <div class="field"><label for="planned">قبل از پارت — قرار است چه بخوانم؟</label><textarea id="planned" placeholder="مثلاً زیست دوازدهم، گفتار ۲ + تست‌های زوج"></textarea></div>
@@ -76,6 +87,25 @@ function allSessions(k){return db.sessions.filter(s=>s.date===k)}
 function totalMinutes(k){return allSessions(k).reduce((a,s)=>a+(s.minutes||0),0)}
 function doneCount(k){return Object.values(dayRecord(k).parts).filter(p=>p.status==='done').length}
 function renderDayPicker(){let d=new Date(selectedDate+'T12:00:00').getDay();$('dayPicker').innerHTML=DAYNAMES.map((name,i)=>{let jsDay=(i+6)%7;return '<button data-day="'+jsDay+'" class="'+(d===jsDay?'selected':'')+'">'+name+'</button>'}).join('');$('dayPicker').querySelectorAll('button').forEach(b=>b.onclick=()=>{let x=new Date(selectedDate+'T12:00:00');let diff=Number(b.dataset.day)-x.getDay();x.setDate(x.getDate()+diff);selectedDate=keyDate(x);selectedSlot=0;renderAll()})}
+function timeMinutesNow(){const d=new Date();return d.getHours()*60+d.getMinutes()+d.getSeconds()/60}
+function renderLivePart(){
+ const now=new Date(),clock=now.toLocaleTimeString('fa-IR',{hour12:false});
+ $('systemClock').textContent=clock;
+ if(selectedDate!==todayKey()){
+   $('liveCurrent').innerHTML='<div class="livename">روز دیگری انتخاب شده</div><div class="livehint">برای تشخیص خودکار، روز امروز را از انتخاب‌گر روز انتخاب کن.</div>';
+   $('liveNext').innerHTML='<div class="livename">—</div><div class="livehint">برنامهٔ روز انتخاب‌شده نمایش داده می‌شود.</div>';return;
+ }
+ const t=timeMinutesNow(),slots=slotsFor(todayKey());
+ const active=slots.find(s=>t>=Number(s.start.slice(0,2))*60+Number(s.start.slice(3)) && t<Number(s.end.slice(0,2))*60+Number(s.end.slice(3)));
+ const upcoming=slots.filter(s=>Number(s.start.slice(0,2))*60+Number(s.start.slice(3))>t);
+ const card=(s,isNext)=>{if(!s)return '<div class="livename">'+(isNext?'برنامهٔ امروز تمام شده':'در حال حاضر پارت زمان‌بندی‌شده‌ای نیست')+'</div><div class="livehint">'+(isNext?'پارت دیگری برای امروز در برنامه نیست.':'زمان فعلی بین دو پارت یا خارج از ساعت برنامه است.')+'</div>';
+ const start=Number(s.start.slice(0,2))*60+Number(s.start.slice(3)),end=Number(s.end.slice(0,2))*60+Number(s.end.slice(3));
+ const remaining=isNext?start-t:end-t;
+ return '<span class="livebadge '+(isNext?'next':'')+'">'+(isNext?'پارت پیش‌رو':'پارت فعلی')+'</span><div class="livename">'+esc(s.name)+'</div><div class="livetime">'+s.start+' – '+s.end+'</div><div class="livehint">'+(isNext?'شروع تا حدود '+faNum(Math.max(0,Math.ceil(remaining)))+' دقیقهٔ دیگر':'زمان باقی‌مانده: '+faNum(Math.max(0,Math.ceil(remaining)))+' دقیقه')+'</div><div style="margin-top:10px"><button type="button" data-live-slot="'+s.id+'">انتخاب این پارت</button></div>'};
+ $('liveCurrent').innerHTML=card(active,false);
+ $('liveNext').innerHTML=card(upcoming[0],true);
+ document.querySelectorAll('[data-live-slot]').forEach(b=>b.onclick=()=>{selectedSlot=Number(b.dataset.liveSlot);renderSchedule();loadPartForm();$('timerSlot').value=String(selectedSlot);$('selectedPartLabel').textContent=slotsFor(selectedDate)[selectedSlot]?.name||'پارت'});
+}
 function renderSchedule(){let slots=slotsFor(selectedDate),day=dayRecord(selectedDate);$('schedule').innerHTML=slots.map(s=>{let p=partData(selectedDate,s.id),active=selectedSlot===Number(s.id),status=p.status==='done'?'تمام‌شده':p.status==='partial'?'نیمه‌تمام':p.status==='skipped'?'انجام‌نشده':'ثبت نشده';return '<div class="slot '+(active?'active ':'')+(p.status==='done'?'done':'')+'"><div class="time">'+s.start+'–'+s.end+'</div><div><div class="name">'+s.name+'</div><div class="desc">'+(p.planned?esc(p.planned):'موضوع هنوز تعیین نشده')+' · '+status+(p.minutes?' · ثبت زمان '+hm(p.minutes):'')+'</div></div><button data-slot="'+s.id+'">'+(active?'انتخاب‌شده':'انتخاب پارت')+'</button></div>'}).join('');$('schedule').querySelectorAll('button').forEach(b=>b.onclick=()=>{selectedSlot=Number(b.dataset.slot);renderSchedule();loadPartForm();$('timerSlot').value=String(selectedSlot);$('selectedPartLabel').textContent='پارت '+faNum(selectedSlot+1)});let total=slots.reduce((a,s)=>a+(s.name.includes('کلاس')||s.name.includes('طراحی')?0:s.duration),0);$('dayTotal').textContent='زمان برنامه‌ریزی مطالعه: '+hm(total)}
 function loadPartForm(){let p=partData(selectedDate,String(selectedSlot));$('planned').value=p.planned||'';$('actual').value=p.actual||'';$('partResult').value=p.status||'pending';$('partNote').value=p.note||'';$('selectedPartLabel').textContent=slotsFor(selectedDate)[selectedSlot]?.name||'پارت'}
 function savePart(markDone=false){let p=partData(selectedDate,String(selectedSlot));p.planned=$('planned').value.trim();p.actual=$('actual').value.trim();p.status=markDone?'done':$('partResult').value;p.note=$('partNote').value.trim();save();renderSchedule();loadPartForm()}
@@ -89,11 +119,11 @@ function renderStats(){let today=todayKey(),now=new Date();$('todayLabel').textC
 function pearson(xs,ys){if(xs.length<3)return null;let ax=xs.reduce((a,b)=>a+b,0)/xs.length,ay=ys.reduce((a,b)=>a+b,0)/ys.length;let num=0,dx=0,dy=0;for(let i=0;i<xs.length;i++){num+=(xs[i]-ax)*(ys[i]-ay);dx+=(xs[i]-ax)**2;dy+=(ys[i]-ay)**2}if(!dx||!dy)return 0;return num/Math.sqrt(dx*dy)}
 function renderHistory(){let keys=Object.keys(db.days).sort().reverse().slice(0,10);let sessionKeys=[...new Set(db.sessions.map(s=>s.date))].sort().reverse();keys=[...new Set([...keys,...sessionKeys])].sort().reverse().slice(0,10);$('history').innerHTML=keys.length?keys.map(k=>'<div class="slot" style="grid-template-columns:minmax(0,1fr) auto"><div><div class="name">'+dateLabel(k)+'</div><div class="desc">مطالعه '+hm(totalMinutes(k))+' · پارت تمام‌شده '+faNum(doneCount(k))+' · خواب '+(dayRecord(k).sleep||'—')+' تا '+(dayRecord(k).wake||'—')+'</div></div><button data-history="'+k+'">بازکردن روز</button></div>').join(''):'<div class="empty">هنوز سابقه‌ای ثبت نشده است.</div>';$('history').querySelectorAll('button').forEach(b=>b.onclick=()=>{selectedDate=b.dataset.history;selectedSlot=0;renderAll();window.scrollTo({top:0,behavior:'smooth'})})}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
-function renderAll(){renderDayPicker();renderSchedule();renderTimerOptions();loadPartForm();renderSleep();renderStats();renderHistory()}
+function renderAll(){renderDayPicker();renderSchedule();renderTimerOptions();loadPartForm();renderSleep();renderStats();renderHistory();renderLivePart()}
 $('savePart').onclick=()=>savePart(false);$('markDone').onclick=()=>savePart(true);
 $('timerSlot').onchange=()=>{selectedSlot=Number($('timerSlot').value);renderSchedule();loadPartForm()};
 $('startBtn').onclick=startTimer;$('pauseBtn').onclick=pauseTimer;$('finishBtn').onclick=finishTimer;
 $('saveSleep').onclick=()=>{let d=dayRecord(selectedDate);d.sleep=$('sleepTime').value;d.wake=$('wakeTime').value;d.sleepNote=$('sleepNote').value.trim();save();let m=duration(d.sleep,d.wake);$('sleepFeedback').textContent=m===null?'ثبت شد':('ثبت شد · مدت خواب: '+hm(m));};
 $('exportBtn').onclick=()=>{let blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='lyra-focus-backup-'+todayKey()+'.json';a.click();URL.revokeObjectURL(url)};
-renderAll();tick();
+renderAll();tick();setInterval(renderLivePart,1000);
 </script></body></html>
